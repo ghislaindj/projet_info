@@ -3,7 +3,7 @@ Remarques :
 * Pour évaluer l'égalité entre deux float, on ne peut pas utiliser ==. Ainsi on compare la valeur absolue de la différence avec un epsilon que l'on fixe  (fixé au pas entre deux floats). Ainsi on teste :
 ```
 fabs(U[i]-val) < EPSILON
-```
+```;
 
 <a name="q1"></a>
 ## Question 1
