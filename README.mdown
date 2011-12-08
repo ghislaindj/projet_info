@@ -1,0 +1,18 @@
+Projet d'informatique
+
+<a name="q1"></a>
+## Question 1
+On peut utiliser la routine block_find pour écrire une routine multi-threads en découpant le tableau en blocs. 
+Chaque bloc sera analysé par un thread différent. 
+<a name="q2"></a>
+## Question 2
+
+<a name="q3"></a>
+## Question 3
+
+<a name="q4"></a>
+## Question 4
+### a
+### b
+### c
+
