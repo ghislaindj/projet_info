@@ -1,9 +1,15 @@
-Projet d'informatique
+###Projet d'informatique
+Remarques : 
+* Pour évaluer l'égalité entre deux float, on ne peut pas utiliser ==. Ainsi on compare la valeur absolue de la différence avec un epsilon que l'on fixe  (fixé au pas entre deux floats). Ainsi on teste :
+```
+fabs(U[i]-val) < EPSILON
+```
 
 <a name="q1"></a>
 ## Question 1
-On peut utiliser la routine block_find pour écrire une routine multi-threads en découpant le tableau en blocs. 
-Chaque bloc sera analysé par un thread différent. 
+On peut utiliser la routine block_find pour écrire une routine multi-threads en découpant le tableau en blocs.;
+Chaque bloc sera analysé par un thread différent qui le parcourt. 
+Par exemple avec un tableau contenant 10 floats
 <a name="q2"></a>
 ## Question 2
 
