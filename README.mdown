@@ -29,17 +29,46 @@ En effet, si l'on considère que l'on va utiliser deux threads, l'un va exécute
 ```C
 cyclic_find(p, 2, n-1);
 ```
-en considérant que p est de taille n, tandis que le second va exécuter la méthode 
+ en considérant que p est de taille n, tandis que le second va exécuter la méthode 
 ```C
 cyclic_find(p+1, 2, n-1-1);
 ```
 
+Ainsi, on exécute la méthode cyclic_find avec le même pas mais une fois sur le tableau p, l'autre fois sur le tableau p+1 (donc le tableau commençant à la seconde case de p). 
+
 <a name="q3"></a>
 ## Question 3
 
+A première vue, je ne vois pas ce qui permettrai de dire qu'un des deux programmes est plus rapide que le second, puisqu'ils vont faire le même nombre d'opérations, et que l'espérance de trouver la bonne valeur à la prochaine itération pour un thread est la même dans les deux cas. 
+
+Une chose pourrait donner un avantage à la méthode par blocs est la performance des accès mémoire. En effet, dans la méthode par blocs, l'espace mémoire utilisé par un thread est contigu, tandis que dans la méthode cyclique, les deux espaces mémoire utilisés par les threads s'enchevètrent. 
+
 <a name="q4"></a>
 ## Question 4
-### a
+### Cas block_find
+
+a. Voyons la structure de données utilisée dans le code pour ce cas : 
+
+```C
+struct thread_data{
+  unsigned int thread_id;
+  float *p;
+  int i_start;
+  int i_end;
+  float val;
+};
+````
+
+* Le thread_id premet de désigner le thread de manière unique.
+* float *p est le pointeur vers le tableau de données utilisée par le thread p
+* i_start représente l'indice du tableau auquel va démarrer la recherche
+* i_end représente l'indice du tableau où l'on s'arrête
+* val est la valeur recherchée
+
+Remarque : On aurait pu passer un pointeur vers la première case d'un sous-tableau que doit explorer le thread (ainsi on se passerait de i_start), et i_end serait en fait la longueur d'un bloc
+
+
+
 ### b
 ### c
 
