@@ -73,5 +73,17 @@ c. Le programme complet pour le cas par blocs est dans le fichier block.c.
 
 ### Cas cyclic_find
 
-a. 
+a. Voyons la structure de données utilisée dans le code pour ce cas : 
 
+````
+struct thread_data{
+  unsigned int thread_id; //permet de désigner le thread de manière unique
+  float *p; //le pointeur vers le tableau de données utilisée par le thread
+  int i_step;  // Le pas 
+  float val; // La valeur recherchée
+};
+````
+
+b. Dans ce cas, on a ``ì_end = n-1-thread_id```` pour tous les threads et ```i_step = NB_THREAD````
+
+c. Le programme complet pour le cas cyclique figure dans le fichier cyclic.c et est complètement documenté.
