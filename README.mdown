@@ -84,8 +84,6 @@ struct thread_data{
 };
 ````
 
-b. Dans ce cas, on a ````C
-i_end = n-1-thread_id```` pour tous les threads et ```C
-i_step = NB_THREAD````
+b. Dans ce cas, on a ````i_end = n-1-thread_id```` pour tous les threads et ```i_step = NB_THREAD````
 
 c. Le programme complet pour le cas cyclique figure dans le fichier cyclic.c et est complètement documenté.
