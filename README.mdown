@@ -51,19 +51,13 @@ a. Voyons la structure de données utilisée dans le code pour ce cas :
 
 ```C
 struct thread_data{
-  unsigned int thread_id;
-  float *p;
-  int i_start;
-  int i_end;
-  float val;
+  unsigned int thread_id; //permet de désigner le thread de manière unique
+  float *p; //le pointeur vers le tableau de données utilisée par le thread
+  int i_start; // l'indice du tableau auquel va démarrer la recherche
+  int i_end; // l'indice du tableau où l'on s'arrête
+  float val; // la valeur recherchée
 };
 ````
-
-* Le thread_id premet de désigner le thread de manière unique.
-* float *p est le pointeur vers le tableau de données utilisée par le thread p
-* i_start représente l'indice du tableau auquel va démarrer la recherche
-* i_end représente l'indice du tableau où l'on s'arrête
-* val est la valeur recherchée
 
 Remarque : On aurait pu passer un pointeur vers la première case d'un sous-tableau que doit explorer le thread (ainsi on se passerait de i_start), et i_end serait en fait la longueur d'un bloc
 
