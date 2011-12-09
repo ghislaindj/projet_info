@@ -106,7 +106,7 @@ int main(int argc, char *argv[]){
 	p = malloc(nb*sizeof(float));
 	int i;
 	double t0,t1, t2, t3 ;
-	srand((unsigned)time(0));
+	//srand((unsigned)time(0));
 	for(i=0; i < nb; i++){
 		//p[i] = ((float)rand()/(float)RAND_MAX)*(1000000)+10;
 		p[i] = (float)((rand() << 15 + rand()) & ((1 << 24) - 1)) / (1 << 24);

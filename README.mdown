@@ -9,11 +9,30 @@ fabs(U[i]-val) < EPSILON
 
 <a name="q1"></a>
 ## Question 1
-On peut utiliser la routine block_find pour écrire une routine multi-threads en découpant le tableau en blocs.;
+On peut utiliser la routine block_find pour écrire une routine multi-threads en découpant le tableau en blocs.
+
 Chaque bloc sera analysé par un thread différent qui le parcourt. 
-Par exemple avec un tableau contenant 10 floats
+
+Par exemple avec un tableau contenant 10 floats, si on veut utiliser deux threads on va découper le tableau en deux blocs (pas la peine d'en faire plus, le programme n'ira pas plus vite avec deux threads et plus de deux blocs).
+
+* Le premier thread va chercher entre les indices 0 et 4. 
+* Le second thread va chercher entre les indices 5 et 9. 
+
+Ainsi on fait une recherche multi-threadée. 
+
 <a name="q2"></a>
 ## Question 2
+
+Une manière simple d'utiliser la routine cyclic_find telle qu'elle a été présentée est que chaque thread utilise le même pas (i_step) et que le tableau passé en argument à la méthode change. 
+
+En effet, si l'on considère que l'on va utiliser deux threads, l'un va exécuter la méthode 
+```C
+cyclic_find(p, 2, n-1);
+```
+en considérant que p est de taille n, tandis que le second va exécuter la méthode 
+```C
+cyclic_find(p+1, 2, n-1-1);
+```
 
 <a name="q3"></a>
 ## Question 3
