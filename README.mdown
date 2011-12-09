@@ -62,7 +62,16 @@ struct thread_data{
 Remarque : On aurait pu passer un pointeur vers la première case d'un sous-tableau que doit explorer le thread (ainsi on se passerait de i_start), et i_end serait en fait la longueur d'un bloc
 
 
+b. Dans ce cas on a assez naturellement (On considère un tableau de taille n, pour NB_THREAD threads) :
 
-### b
-### c
+````
+i_start = thread_id*(n/NB_THREADS);
+i_end = (thread_id+1)*(n/NB_THREADS)-1;
+````
+
+c. Le programme complet pour le cas par blocs est dans le fichier block.c. 
+
+### Cas cyclic_find
+
+a. 
 
