@@ -20,9 +20,13 @@ static bool finished = 0;
 
 /* We define the structure of the thread */
 struct thread_data{
+	// id of the thread
   unsigned int thread_id;
+  // the array
   float *p;
+  // Step used for the cyclic_routine
   int i_step;
+  // The value we're looking for
   float val;
 };
 
@@ -33,6 +37,7 @@ struct thread_data{
 int rs[NB_THREADS];
 
 // Variables for the threads
+int rs[NB_THREADS];
 struct thread_data thread_data_array[NB_THREADS];
 unsigned int thread_i;
 pthread_t thread_ptr[NB_THREADS];
@@ -47,28 +52,28 @@ double now(){
 
 /* Cyclic find function 
 It searches a value step by step, from 0 to i_end */
-int cyclic_find(float *U, int i_step, int i_end, float val){
+int cyclic_find(float *U, int i_step, int i_end, float val, int thread_id){
 	int i;
 
 	for(i=0; i < i_end/i_step+1; i++){
 		// We look if another thread has already found the value
 		if(finished == 1) {
-				printf("received break instruction\n");
 				break;
 		}
 		if(fabs(U[i*i_step]-val) < EPSILON){
 			finished = 1;
-			return i*i_step;
+			printf("%d\n", i*i_step+thread_id);
+			return 1;
 		}
 	}
-    return -1;
+    return 0;
 }
 
 /* Thread function 
 This is the function that is called when a thread is launched */
 void *thread_function(void *threadarg){
 	// Local variables
-	int id, result;
+	int id;
 	// Shared variables correspondances
 	float *p;
 	int i_step;
@@ -83,9 +88,7 @@ void *thread_function(void *threadarg){
 	val = thread_pointer_data->val;
 	
 	// Body of the thread
-	result = cyclic_find(p, NB_THREADS, nb-1-id, val);
-	if(result > -1)
-		printf("Found it : %d (for information p[%d]=%f)\n", result + id, result + id, p[result]);	
+	rs[id] = cyclic_find(p, NB_THREADS, nb-1-id, val, id);	
 	
 	pthread_exit(NULL);
 	return 0;
@@ -94,7 +97,7 @@ void *thread_function(void *threadarg){
 /* Multithread search function
 The function that creates and launches the threads */
 int search_thread(float *p, int n, float val){
-  	int i;
+  	int i, s;
 	// Create and launch threads
 	for(i=0;i<NB_THREADS;i++){
 	  thread_i = i;
@@ -107,10 +110,13 @@ int search_thread(float *p, int n, float val){
 	  pthread_create(&thread_ptr[thread_i], NULL, thread_function, (void *) &thread_data_array[thread_i]);
 	}
 	// Wait for every thread to complete
-	for(i=0;i<NB_THREADS;i++){
+	for(i=0;i<NB_THREADS;i++)
   		pthread_join(thread_ptr[thread_i], NULL);
-	}
-	return 1;
+
+	for(i=0;i<NB_THREADS;i++)
+		s = s || rs[i];
+		
+	return s;
 }
 
 int main(int argc, char *argv[]){
@@ -124,27 +130,30 @@ int main(int argc, char *argv[]){
 	p = malloc(nb*sizeof(float));
 	int i;
 
-	
+	// Filling the array
 	for(i=0; i < nb; i++){
 		p[i] = ((float)rand()/(float)RAND_MAX)+(rand()%100);
-		//printf("p[%d]=%f\n", i, p[i]);
-		if(i>nb-5)
-			printf("i=%d, p[i]=%f\n", i, p[i]);
 	}
 	
 	// The value to look for
 	float val = 9.589720;
-	printf("Searching with a multithread method...\n");
+	
+	// The time
 	double t0,t1, t2, t3 ;
-	t0=now(); search_thread(p, nb, val); t1=now(); 
+	
+	printf("Searching with a multithread method...\n");
+	
+	t0=now(); i = search_thread(p, nb, val); t1=now(); 
+	if(i==0)
+		printf("Not found with multithread method\n");
 	printf("Multi-Thread T = %6.4f\n",t1-t0);
+	
 	printf("Searching with a monothread method...\n");
+	
 	finished = 0;
-	t2 = now(); 
-	int mono_result = cyclic_find(p, 1, nb-1, val); 
-	t3 = now();
-	if(mono_result > -1)
-		printf("Found it : %d (for information p[%d]=%f)\n", mono_result, mono_result, p[mono_result]);	
+	t2 = now();	 i = cyclic_find(p, 1, nb-1, val, 0); t3 = now();
+	if(i==0)
+		printf("Not found with mono-thread method\n");
 	printf("Mono-Thread T = %6.4f\n",t3-t2);
 	
 	//Free the memory

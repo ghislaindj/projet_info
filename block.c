@@ -8,24 +8,40 @@
 #include <sys/time.h> // for timing
 #include <pthread.h>
 
+// Epsilon used to evaluate the equality of two floats
 static float EPSILON = 0.000001;
+
+// Here we define the size of the array
 static int nb = 100000000;
+
+// Used in a multithread work. 
+// Boolean used to see if a thread has already found the requested value in the array or not
 static bool finished = 0;
 
+/* We define the structure of the thread */
 struct thread_data{
+	// id of the thread
   unsigned int thread_id;
+  // the array
   float *p;
+  // Starting position for the research
   int i_start;
+  // Ending position
   int i_end;
+  // The value we're looking for
   float val;
 };
 
+// Number of threads
 #define NB_THREADS 4
+
+// Variable to store the set of results
 int rs[NB_THREADS];
 struct thread_data thread_data_array[NB_THREADS];
 unsigned int thread_i;
 pthread_t thread_ptr[NB_THREADS];
 
+/* Timing function */
 double now(){
    struct timeval t; double f_t;
    gettimeofday(&t, NULL); 
@@ -33,11 +49,11 @@ double now(){
    return f_t; 
 }
 
+/* Block find function */
 int block_find(float *U, int i_start, int i_end, float val){
 	int i;
 	for(i=i_start; i < i_end + 1; i++){
 		if(finished == 1) {
-			//printf("received break instruction");
 			break;
 		}
 		if(fabs(U[i]-val) < EPSILON){
@@ -45,11 +61,12 @@ int block_find(float *U, int i_start, int i_end, float val){
 			finished = 1;
 			return 1;
 		}
-		//printf("Some thread looking for %d\n", i);
 	}
     return 0;
 }
 
+/* Thread function 
+This is the function that is called when a thread is launched */
 void *thread_function(void *threadarg){
  /* Local variables */
   int id;
@@ -69,7 +86,6 @@ void *thread_function(void *threadarg){
  
   /* Body of the thread */
   rs[id] = block_find(p, i_start, i_end, val);
-  //printf("Thread %d : i_start=%d, i_end=%d\n", id, i_start, i_end);
 
   pthread_exit(NULL);
   return 0;
@@ -78,10 +94,7 @@ void *thread_function(void *threadarg){
 int search_thread(float *p, int n, float val){
   	int i, s;
   	s = 0;
-/*-------------------------------------------------------------*/
-/* We prepare and call the thread version of this code portion */
-/*-------------------------------------------------------------*/
-/* Create and launch threads */
+	/* Create and launch threads */
 	for(i=0;i<NB_THREADS;i++){
 	  thread_i = i;
 	  /* Prepare data for this thread */
@@ -93,30 +106,51 @@ int search_thread(float *p, int n, float val){
 	  /* Create and launch this thread */
 	  pthread_create(&thread_ptr[thread_i], NULL, thread_function, (void *) &thread_data_array[thread_i]);
 	}
-/* Wait for every thread to complete  */
+	/* Wait for every thread to complete  */
 	for(i=0;i<NB_THREADS;i++){
   		pthread_join(thread_ptr[thread_i], NULL);
 	}
-	return 1;
+	for(i=0;i<NB_THREADS;i++)
+		s = s || rs[i];
+	return s;
 }
 
 int main(int argc, char *argv[]){
-	printf("float rand: %f\n", (float)rand());
+	printf("generating the array...\n");
+	/* The following line is used in order to have a sort of random array
+	If we comment this line, */
+	srand((unsigned)time(0));
+	
+	// the array is allocated and then filled with random floats
 	float *p;
 	p = malloc(nb*sizeof(float));
 	int i;
+	
+	// Timing
 	double t0,t1, t2, t3 ;
-	//srand((unsigned)time(0));
+
+	// Filling the array
 	for(i=0; i < nb; i++){
-		//p[i] = ((float)rand()/(float)RAND_MAX)*(1000000)+10;
-		p[i] = (float)((rand() << 15 + rand()) & ((1 << 24) - 1)) / (1 << 24);
-		if(i>nb-5)
-			printf("%f\n", p[i]);
+		p[i] = ((float)rand()/(float)RAND_MAX)+(rand()%100);
 	}
+	
+	// The value we're looking for
 	float val = 0.265625;
-	t0=now(); search_thread(p, nb, val); t1=now(); 
+	
+	printf("Searching with a multithread method...\n");
+	t0=now(); i = search_thread(p, nb, val); t1=now(); 
+	if(i==0)
+		printf("Not found with multithread method\n");
 	printf("Multi-Thread T = %6.4f\n",t1-t0);
+	
 	finished = 0;
-	t2 = now(); block_find(p, 0, nb-1, val); t3 = now();
+	printf("Searching with a monothread method...\n");
+	t2 = now(); i = block_find(p, 0, nb-1, val); t3 = now();
+	
+	if(i==0)
+		printf("Not found with mono-thread method\n");
 	printf("Mono-Thread T = %6.4f\n",t3-t2);
+	
+	//Free the memory
+	free(p);
 }

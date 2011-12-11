@@ -45,6 +45,9 @@ Une chose pourrait donner un avantage à la méthode par blocs est la performanc
 
 <a name="q4"></a>
 ## Question 4
+
+Afin de stopper les autres threads lorsque l'un d'entre eux a trouvé une valeur (cela marche car on recherche une seule valeur et non toutes, et que l'on ne recherche que la première), on peut utiliser une variable statique (un booleen) que l'on initialise à 0, et que le premier thread qui trouve la valeur recherchée change à 1.
+
 ### Cas block_find
 
 a. Voyons la structure de données utilisée dans le code pour ce cas : 
