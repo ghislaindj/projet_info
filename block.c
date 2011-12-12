@@ -118,7 +118,7 @@ int search_thread(float *p, int n, float val){
 int main(int argc, char *argv[]){
 	printf("generating the array...\n");
 	/* The following line is used in order to have a sort of random array
-	If we comment this line, */
+	If we comment this line, the array will be the same at every launch of the program*/
 	srand((unsigned)time(0));
 	
 	// the array is allocated and then filled with random floats
