@@ -39,9 +39,9 @@ Ainsi, on exécute la méthode cyclic_find avec le même pas mais une fois sur l
 <a name="q3"></a>
 ## Question 3
 
-A première vue, je ne vois pas ce qui permettrai de dire qu'un des deux programmes est plus rapide que le second, puisqu'ils vont faire le même nombre d'opérations, et que l'espérance de trouver la bonne valeur à la prochaine itération pour un thread est la même dans les deux cas. 
+A première vue, je ne vois pas ce qui permettrais de dire qu'un des deux programmes est plus rapide que le second, puisqu'ils vont faire le même nombre d'opérations, et que l'espérance de trouver la bonne valeur à la prochaine itération pour un thread est la même dans les deux cas. 
 
-Une chose pourrait donner un avantage à la méthode par blocs est la performance des accès mémoire. En effet, dans la méthode par blocs, l'espace mémoire utilisé par un thread est contigu, tandis que dans la méthode cyclique, les deux espaces mémoire utilisés par les threads s'enchevètrent. 
+Une chose pourrait donner un avantage à la méthode par blocs est la performance des accès mémoire. En effet, dans la méthode par blocs, l'espace mémoire utilisé par un thread est contigu, tandis que dans la méthode cyclique, les deux espaces mémoire utilisés par les threads s'enchevêtrent. 
 
 <a name="q4"></a>
 ## Question 4
